@@ -36,7 +36,7 @@ const createTodo = function (storageData) {
 };
 
 const keyCodeCheck = function () {
-    if (window.event.keyCode === 13 && todoInput.value !== "") {
+    if (window.event.keyCode === 13 && todoInput.value.trim() !== "") {
         createTodo();
     }
 };
@@ -67,3 +67,31 @@ if (savedTodoList) {
         createTodo(savedTodoList[i]);
     }
 }
+
+const weatherSearch = function (position) {
+    fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${position.latitude}&lon=${position.longitude}&appid=`)
+        .then((response) => response.json())
+        .then((json) => {
+            console.log(json.name, json.weather);
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+};
+
+const accessToGeo = function (position) {
+    const positionObj = {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+    };
+    // localStorage.setItem("position", JSON.stringify(positionObj));
+    weatherSearch(positionObj);
+};
+
+const askForLocation = function () {
+    navigator.geolocation.getCurrentPosition(accessToGeo, (err) => {
+        console.log(err);
+    });
+};
+
+askForLocation();
